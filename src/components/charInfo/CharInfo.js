@@ -5,61 +5,59 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 import Skeleton from "../skeleton/Skeleton";
 import MarvelService from "../../services/MarvelService";
 import "./charInfo.scss";
-import thor from "../../resources/img/thor.jpeg";
 
 class CharInfo extends Component {
+  state = {
+    char: null,
+    loading: false,
+    error: false,
+  };
 
-    state = {
-        char: null,
-        loading: false,
-        error: false
+  marvelService = new MarvelService();
+
+  componentDidMount() {
+    this.updateChar();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.charId !== prevProps.charId) {
+      this.updateChar();
+    }
+  }
+
+  updateChar = () => {
+    const { charId } = this.props;
+    if (!charId) {
+      return;
     }
 
-    marvelService = new MarvelService();
+    this.onCharLoading();
 
-    componentDidMount() {
-        this.updateChar();
-    }
+    this.marvelService
+      .getCharacter(charId)
+      .then(this.onCharLoaded)
+      .catch(this.onError);
+  };
 
-    componentDidUpdate(prevProps){
-        if (this.props.charId !== prevProps.charId) {
-            this.updateChar();
-        }
-    }
+  onCharLoaded = (char) => {
+    this.setState({
+      char,
+      loading: false,
+    });
+  };
 
-    updateChar = () => {
-        const {charId} = this.props;
-        if (!charId) {
-            return;
-        }
+  onCharLoading = () => {
+    this.setState({
+      loading: true,
+    });
+  };
 
-        this.onCharLoading();
-
-        this.marvelService
-            .getCharacter(charId)
-            .then(this.onCharLoaded)
-            .catch(this.onError);
-    }
-
-    onCharLoaded = (char) => {
-        this.setState({
-            char, 
-            loading: false
-        })
-    }
-
-    onCharLoading = () => {
-        this.setState({
-            loading: true
-        })
-    }
-
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true
-        })
-    }
+  onError = () => {
+    this.setState({
+      loading: false,
+      error: true,
+    });
+  };
 
   render() {
     const { char, loading, error } = this.state;
@@ -79,9 +77,9 @@ class CharInfo extends Component {
   }
 }
 
-const View = ({char}) => {
+const View = ({ char }) => {
   const { name, description, thumbnail, homepage, wiki, comics } = char;
-  let imgStyle = { 'objectFit': "cover" };
+  let imgStyle = { objectFit: "cover" };
   if (
     thumbnail ===
     "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg"
@@ -91,7 +89,7 @@ const View = ({char}) => {
   return (
     <>
       <div className="char__basics">
-        <img src={thumbnail} alt={name} style={imgStyle}/>
+        <img src={thumbnail} alt={name} style={imgStyle} />
         <div>
           <div className="char__info-name">{name}</div>
           <div className="char__btns">
@@ -107,12 +105,12 @@ const View = ({char}) => {
       <div className="char__descr">{description}</div>
       <div className="char__comics">Comics:</div>
       <ul className="char__comics-list">
-        {comics.length > 0 ? null :'There is no comics with this character'}
+        {comics.length > 0 ? null : "There is no comics with this character"}
         {comics.map((item, i) => {
-            if (i>9) return;
+          if (i > 9) return;
           return (
             <li key={i} className="char__comics-item">
-              {i+1}.{item.name}
+              {i + 1}.{item.name}
             </li>
           );
         })}
