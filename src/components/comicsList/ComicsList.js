@@ -5,10 +5,10 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 import "./comicsList.scss";
 
 const ComicsList = () => {
-    const [comicsList, setComicsList] = useState([]);
-    const [newItemLoading, setnewItemLoading] = useState(false);
-    const [offset, setOffset] = useState(0);
-    const [comicsEnded, setComicsEnded] = useState(false);
+  const [comicsList, setComicsList] = useState([]);
+  const [newItemLoading, setnewItemLoading] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [comicsEnded, setComicsEnded] = useState(false);
 
   const { loading, error, getAllComics } = useMarvelService();
 
@@ -18,9 +18,8 @@ const ComicsList = () => {
 
   const onRequest = (offset, initial) => {
     initial ? setnewItemLoading(false) : setnewItemLoading(true);
-    getAllComics(offset)
-        .then(onComicsListLoaded)
-}
+    getAllComics(offset).then(onComicsListLoaded);
+  };
 
   const onComicsListLoaded = (newComicsList) => {
     let ended = false;
@@ -29,8 +28,8 @@ const ComicsList = () => {
     }
 
     setComicsList([...comicsList, ...newComicsList]);
-    setnewItemLoading( false);
-    setOffset( offset + 8);
+    setnewItemLoading(false);
+    setOffset(offset + 8);
     setComicsEnded(ended);
   };
 
