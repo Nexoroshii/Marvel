@@ -5,10 +5,10 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 import "./comicsList.scss";
 
 const ComicsList = () => {
-  const [comicsList, setComicsList] = useState([]);
-  const [newItemLoading, setNewItemLoading] = useState(false);
-  const [offset, setOffset] = useState(210);
-  const [comicsEnded, setComicsEnded] = useState(false);
+    const [comicsList, setComicsList] = useState([]);
+    const [newItemLoading, setnewItemLoading] = useState(false);
+    const [offset, setOffset] = useState(0);
+    const [comicsEnded, setComicsEnded] = useState(false);
 
   const { loading, error, getAllComics } = useMarvelService();
 
@@ -17,20 +17,21 @@ const ComicsList = () => {
   }, []);
 
   const onRequest = (offset, initial) => {
-    initial ? setNewItemLoading(false) : setNewItemLoading(true);
-    getAllComics(offset).then(onComicsListLoaded);
-  };
+    initial ? setnewItemLoading(false) : setnewItemLoading(true);
+    getAllComics(offset)
+        .then(onComicsListLoaded)
+}
 
   const onComicsListLoaded = (newComicsList) => {
     let ended = false;
-    if (newComicsList.length < 9) {
+    if (newComicsList.length < 8) {
       ended = true;
     }
 
-    setComicsList((comicsList) => [...comicsList, ...newComicsList]);
-    setNewItemLoading((newItemLoading) => false);
-    setOffset((offset) => offset + 8);
-    setComicsEnded((comicsEnded) => ended);
+    setComicsList([...comicsList, ...newComicsList]);
+    setnewItemLoading( false);
+    setOffset( offset + 8);
+    setComicsEnded(ended);
   };
 
   function renderItems(arr) {
